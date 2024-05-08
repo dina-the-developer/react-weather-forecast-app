@@ -1,0 +1,37 @@
+.weather-app-container{
+  background-image: linear-gradient(to right, #111111, #777777);
+  width: 100%;
+  height: 100vh;
+  padding-top: 100px;
+}
+.weather-app-container .card{
+  background-color: rgba(0,0,0,.5);
+  padding: 10px;
+  text-align: center;
+}
+.weather-app-container .card.today{
+  text-align: left;
+}
+.weather-app-container .card.today  h6{
+  font-size: 36px;
+}
+.weather-app-container .card.today .card-text{
+  font-size: 28px;
+}
+.weather-app-container .card.today span{
+  font-size: 22px;
+  padding: 0px
+}
+.weather-app-container .card h6{
+  font-size: 20px;
+}
+.weather-app-container .card .card-text{
+  font-size: 20px;
+}
+.weather-app-container .card span{
+  padding: 20px 0px;
+  font-size: 36px;
+}
+.weather-app-container .card .card-text span{
+  font-size: 16px;
+}
