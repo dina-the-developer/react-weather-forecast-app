@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-// API endpoint and key (make sure to replace YOUR_API_KEY with your OpenWeatherMap API key)
-const API_KEY = 'bfed2bf4b1a5bbe0342acfb956f95eaf';
 const BASE_URL = 'https://api.open-meteo.com/v1/forecast?latitude=11.01&longitude=76.95&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m';
 
 const WeatherForecast = () => {
