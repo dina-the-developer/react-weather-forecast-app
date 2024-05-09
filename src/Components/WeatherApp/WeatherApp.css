@@ -6,32 +6,38 @@
 }
 .weather-app-container .card{
   background-color: rgba(0,0,0,.5);
-  padding: 10px;
   text-align: center;
 }
 .weather-app-container .card.today{
   text-align: left;
 }
+.weather-app-container .card.today .card-img-overlay{
+  background-color: rgba(0,0,0,.5);
+}
 .weather-app-container .card.today  h6{
   font-size: 36px;
 }
 .weather-app-container .card.today .card-text{
-  font-size: 28px;
+  font-size: 42px;
 }
 .weather-app-container .card.today span{
   font-size: 22px;
   padding: 0px
 }
+.weather-app-container .card.today .card-title span{
+  float: right;
+  font-size: 100px;
+}
 .weather-app-container .card h6{
   font-size: 20px;
 }
 .weather-app-container .card .card-text{
-  font-size: 20px;
+  font-size: 16px;
 }
 .weather-app-container .card span{
-  padding: 20px 0px;
+  padding: 11px 0px;
   font-size: 36px;
 }
 .weather-app-container .card .card-text span{
-  font-size: 16px;
+  font-size: 14px;
 }
