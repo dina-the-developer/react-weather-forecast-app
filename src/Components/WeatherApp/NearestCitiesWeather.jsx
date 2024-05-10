@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Header from '../Includes/Header';
 
-const NearestCitiesWeather = () => {
-  const [city, setCity] = useState('');
-  const [zip, setZip] = useState('');
-  const [country, setCountry] = useState('');
+const NearestCitiesWeather = ({ city }) => {
+  console.log(city)
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [cities, setCities] = useState([]);
@@ -12,54 +11,18 @@ const NearestCitiesWeather = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-    // const weatherIcons = {
-    //   0: '☀️',
-    //   1: '⛅',
-    //   2: '🌥️',
-    //   3: '☁️',
-    //   45: '🌫️',
-    //   48: '🌫️',
-    //   51: '🌧️',
-    //   53: '🌧️',
-    //   55: '🌧️',
-    //   61: '🌦️',
-    //   63: '🌧️',
-    //   65: '🌧️',
-    //   66: '🌨️',
-    //   67: '🌨️',
-    //   71: '🌨️',
-    //   73: '🌨️',
-    //   75: '🌨️',
-    //   77: '❄️',
-    //   80: '🌧️',
-    //   81: '🌧️',
-    //   82: '🌧️',
-    //   85: '❄️',
-    //   86: '❄️',
-    //   95: '🌩️',
-    //   96: '🌩️',
-    //   99: '🌩️',
-    // };
+  // API key for OpenCage, ensure you keep this secure and do not commit to public repos
+  const GEOCODING_API_KEY = '381dd746312747bbb46c7a65ca4a1837';
 
-    // Function to fetch coordinates based on user input
-  const fetchCoordinates = async () => {
-    let query = '';
-
-    if (city) {
-      query = city;
-    } else if (zip) {
-      query = zip;
-    } else if (country) {
-      query = country;
-    }
-
-    if (query) {
+  // Function to fetch coordinates based on location input
+  const fetchCoordinates = async (cityName) => {
+    if (cityName) {
       try {
         setLoading(true); // Start loading when fetching coordinates
-        const response = await axios.get( 'https://api.opencagedata.com/geocode/v1/json', {
+        const response = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
           params: {
-            q: query,
-            key: API_KEY,
+            q: cityName,
+            key: GEOCODING_API_KEY,
             no_annotations: 1,
           },
         });
@@ -77,17 +40,19 @@ const NearestCitiesWeather = () => {
       }
     }
   };
+ 
 
-  // Fetch nearest cities and weather data once latitude and longitude are obtained
+  useEffect(() => {
+    fetchCoordinates(city); // Fetch coordinates when city changes
+  }, [city]); // Dependency array ensures fetching when city changes
   useEffect(() => {
     const fetchNearestCitiesAndWeather = async () => {
       if (latitude && longitude) {
         try {
-          // Fetch the nearest cities
-          const cityResponse = await axios.get( 'https://api.opencagedata.com/geocode/v1/json', {
+          const cityResponse = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
             params: {
               q: `${latitude},${longitude}`,
-              key: API_KEY,
+              key: GEOCODING_API_KEY,
               no_annotations: 1,
               limit: 5, // Get 5 nearest cities
             },
@@ -101,13 +66,12 @@ const NearestCitiesWeather = () => {
 
           setCities(cityData);
 
-          // Fetch weather for those cities
           const weatherPromises = cityData.map((city) =>
             axios.get('https://api.open-meteo.com/v1/forecast', {
               params: {
                 latitude: city.lat,
                 longitude: city.lon,
-                current_weather: true, // Get current weather
+                current_weather: true, // Fetch current weather
               },
             })
           );
@@ -121,7 +85,7 @@ const NearestCitiesWeather = () => {
           }, {});
 
           setWeatherData(weatherMap);
-          setLoading(false); // Stop loading once complete
+          setLoading(false);
         } catch (error) {
           setError(error);
           setLoading(false);
@@ -129,16 +93,10 @@ const NearestCitiesWeather = () => {
       }
     };
 
-    fetchNearestCitiesAndWeather(); // Fetch data when latitude and longitude are available
-  }, [latitude, longitude]); // Dependency array ensures re-fetching when coordinates change
-
-  const handleInputChange = (e, setFunction) => {
-    setFunction(e.target.value);
-  };
-
-  const handleSearch = () => {
-    fetchCoordinates(); // Fetch coordinates when search is triggered
-  };
+    if (latitude && longitude) {
+      fetchNearestCitiesAndWeather(); // Fetch data when coordinates are available
+    }
+  }, [latitude, longitude]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -150,38 +108,11 @@ const NearestCitiesWeather = () => {
 
   return (
     <div>
-      <h2>Nearest Cities Weather Forecast</h2>
-      <div>
-        <label>
-          City:
-          <input
-            type="text"
-            value={city}
-            onChange={(e) => handleInputChange(e, setCity)}
-          />
-        </label>
-        <label>
-          Zip:
-          <input
-            type="text"
-            value={zip}
-            onChange={(e) => handleInputChange(e, setZip)}
-          />
-        </label>
-        <label>
-          Country:
-          <input
-            type="text"
-            value={country}
-            onChange={(e) => handleInputChange(e, setCountry)}
-          />
-        </label>
-        <button onClick={handleSearch}>Search</button>
-      </div>
+      <h2>Weather for Nearest 5 Cities</h2>
       <div>
         {cities.map((city, index) => (
           <div key={index} style={{ border: '1px solid gray', padding: '10px', margin: '10px' }}>
-            <h3>{city.city}</h3> {/* Display city name */}
+            <h3>{city.city}</h3>
             {weatherData[city.city] ? (
               <p>
                 Temperature: {weatherData[city.city].temperature}°C <br />
@@ -196,5 +127,6 @@ const NearestCitiesWeather = () => {
     </div>
   );
 };
+
 
 export default NearestCitiesWeather;

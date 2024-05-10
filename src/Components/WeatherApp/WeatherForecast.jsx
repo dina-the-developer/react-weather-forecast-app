@@ -5,6 +5,7 @@ import { Card, Col, Row } from 'react-bootstrap';
 const BASE_URL = 'https://api.open-meteo.com/v1/forecast';
 
 const WeatherForecast = ({ latitude, longitude }) => {
+  // console.log(latitude + ' - ' + longitude)
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,13 +43,10 @@ const weatherIcons = {
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const currentTime = new Date(); // Get the current time
-        const startTime = currentTime.toISOString(); // Convert to ISO 8601 format
-        const endTime = new Date(currentTime.getTime() + 7 * 60 * 60 * 1000).toISOString(); // +7 hours
         const response = await axios.get( BASE_URL, {
           params: {
-            latitude : '11.01',
-            longitude : '76.95',
+            latitude : latitude,
+            longitude : longitude,
             current : 'temperature_2m,weather_code',
             // hourly: 'temperature_2m,weather_code',
             daily : 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset',
@@ -96,21 +94,13 @@ const weatherIcons = {
     });
   };
 
-  // const currentDate = weatherData.current.time;
-  // const currentTemp = weatherData.current.temperature_2m;
-
   // Daily weather data
   const dailyData = weatherData.daily; // Extract daily weather data
   const times = dailyData.time; // Array of dates
   const code = dailyData.weather_code;
   const maxTemperatures = dailyData.temperature_2m_max; // Array of max temperatures
 
-  // const minTemperatures = dailyData.temperature_2m_min; // Array of min temperatures
-
-  // const precipitation = hourlyData.precipitation;
-  // const windSpeed = hourlyData.wind_speed_10m;
-
-  return (
+ return (
       <Row>
         {
         times.map((time, index) => (
