@@ -7,22 +7,20 @@ import axios from 'axios';
 // import Footer from './Components/Includes/Footer';
 import Header from './Components/Includes/Header';
 import WeatherApp from './Components/WeatherApp/WeatherApp';
-import WorldWeatherMap from './Components/WeatherApp/WorldWeatherMap';
 
 const API_KEY = '381dd746312747bbb46c7a65ca4a1837'; 
 
 function App() {
   const [position, setPosition] = useState({ latitude: null, longitude: null });
   useEffect(() => {
-    
+    console.log(position);
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(function (position) {
         setPosition({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
-        console.log(position.coords.latitude + '-' + position.coords.longitude)
-        console.log(position);
+
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
         getLocationInfo(position.coords.latitude,position.coords.longitude);
@@ -70,9 +68,9 @@ function App() {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data.status.code === 200) {
-          console.log("results:", data.results);
+          // console.log("results:", data.results);
           // setLocation(data.results[0].formatted);
           setLocationInfo(data.results[0].formatted);
         } else {
@@ -104,12 +102,7 @@ function App() {
   return (
     <div className="App">
       <Header onLocationSearch={handleLocationSearch} locationInfo={locationInfo}/>
-      {/* {latitude && longitude ? ( */}
-        <WeatherApp latitude={latitude} longitude={longitude} />
-      {/* ) : (
-        <p>Please enter a location to get the weather forecast.</p>
-      )} */}
-      {/* <WorldWeatherMap /> */}
+        <WeatherApp latitude={latitude} longitude={longitude} />      
       {/* <Footer /> */}
     </div>
   );

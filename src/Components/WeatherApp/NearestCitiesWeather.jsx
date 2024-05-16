@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Header from '../Includes/Header';
 
-const NearestCitiesWeather = ({ city }) => {
-  console.log(city)
+const NearestCitiesWeather = ({ lat, long }) => {
+  console.log(lat, long )
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [cities, setCities] = useState([]);
@@ -43,15 +42,16 @@ const NearestCitiesWeather = ({ city }) => {
  
 
   useEffect(() => {
-    fetchCoordinates(city); // Fetch coordinates when city changes
-  }, [city]); // Dependency array ensures fetching when city changes
+    fetchCoordinates(lat, long ); // Fetch coordinates when city changes
+  }, [lat, long ]); // Dependency array ensures fetching when city changes
+
   useEffect(() => {
     const fetchNearestCitiesAndWeather = async () => {
-      if (latitude && longitude) {
+      if (lat && long) {
         try {
           const cityResponse = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
             params: {
-              q: `${latitude},${longitude}`,
+              q: `${lat},${long}`,
               key: GEOCODING_API_KEY,
               no_annotations: 1,
               limit: 5, // Get 5 nearest cities
@@ -66,11 +66,11 @@ const NearestCitiesWeather = ({ city }) => {
 
           setCities(cityData);
 
-          const weatherPromises = cityData.map((city) =>
+          const weatherPromises = cityData.map((lat, long ) =>
             axios.get('https://api.open-meteo.com/v1/forecast', {
               params: {
-                latitude: city.lat,
-                longitude: city.lon,
+                latitude: lat,
+                longitude: long,
                 current_weather: true, // Fetch current weather
               },
             })
@@ -96,7 +96,7 @@ const NearestCitiesWeather = ({ city }) => {
     if (latitude && longitude) {
       fetchNearestCitiesAndWeather(); // Fetch data when coordinates are available
     }
-  }, [latitude, longitude]);
+  }, []);
 
   if (loading) {
     return <p>Loading...</p>;

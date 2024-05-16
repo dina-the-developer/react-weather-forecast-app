@@ -5,8 +5,9 @@ import Col from 'react-bootstrap/Col';
 
 import './WeatherApp.css'; 
 import WeatherForecast from './WeatherForecast';
-import WeatherForecastChart from './WeatherForecastChart';
-// import NearestCitiesWeather from './NearestCitiesWeather';
+import HourlyForecastChart from './HourlyForecastChart';
+
+import NearestCitiesWeather from './NearestCitiesWeather';
 
 const WeatherApp = ({latitude, longitude}) => {
   // console.log(latitude + ' - ' + longitude)
@@ -18,15 +19,15 @@ const WeatherApp = ({latitude, longitude}) => {
             <WeatherForecast latitude={latitude} longitude={longitude}/>
           </Col>
           <Col sm={3}>
-            {/* <NearestCitiesWeather /> */}
+            <NearestCitiesWeather lat={latitude} long={longitude} />
           </Col>
         </Row>
         <Row>
           <Col sm={9}>
-            <WeatherForecastChart latitude={latitude} longitude={longitude}/>
+            { <HourlyForecastChart latitude={latitude} longitude={longitude} /> }
           </Col>
           <Col sm={3}>
-            {/* <NearestCitiesWeather /> */}
+          
           </Col>
         </Row>
       </Container>

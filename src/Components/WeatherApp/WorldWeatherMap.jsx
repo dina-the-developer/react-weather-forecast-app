@@ -1,94 +1,57 @@
-import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
-import axios from 'axios';
-import worldGeoJSON from '../Assets/world-110m.json'; // Example GeoJSON data for the world
-
-// const API_KEY = 'YOUR_GEOCODING_API_KEY'; // Replace with your weather API key
-
-const capitalCities = [
-  { country: 'Afghanistan', capital: 'Kabul', lat: 34.5553, lon: 69.2075 },
-  { country: 'Albania', capital: 'Tirana', lat: 41.3275, lon: 19.8189 },
-  // Add more capitals with coordinates here
-];
+import React, { useState, useEffect } from 'react';
 
 const WorldWeatherMap = () => {
-  const [weatherData, setWeatherData] = useState({});
+  const [data, setData] = useState([]);
+  const [map, setMap] = useState(null);
 
   useEffect(() => {
-    const svg = d3.select('#world-map')
-      .attr('width', 800) // Set width
-      .attr('height', 600); // Set height
+    fetch('https://api.open-meteo.com/v1/forecast?current_weather=true&temperature_unit=celsius&q=London')
+      .then(response => response.json())
+      .then(data => setData(data));
 
-    // Create a projection and path generator for the world map
-    const projection = d3.geoMercator().scale(130).translate([400, 300]);
-    const path = d3.geoPath().projection(projection);
+      // console.log(data);
 
-    // Load and display the world map
-    d3.json(worldGeoJSON, (error, world) => {
-      if (error) throw error;
+    const svg = d3.select('#map')
+      .append('svg')
+      .attr('width', 800)
+      .attr('height', 600);
 
-      svg.append('path')
-        .datum({ type: 'FeatureCollection', features: world.features })
-        .attr('class', 'land')
-        .attr('d', path);
-    });
+    setMap(svg);
+  }, [data]);
 
-    // Plot the capitals
-    svg.selectAll('circle')
-      .data(capitalCities)
-      .enter()
-      .append('circle')
-      .attr('cx', (d) => projection([d.lon, d.lat])[0])
-      .attr('cy', (d) => projection([d.lon, d.lat])[1])
-      .attr('r', 4)
-      .attr('fill', 'red');
+  useEffect(() => {
+    if (map && data) {
+      const projection = d3.geoMercator()
+        .center([0, 40])
+        .scale(150)
+        .translate([400, 300]);
 
-    // Fetch weather data for each capital
-    const fetchWeather = async () => {
-      const weatherPromises = capitalCities.map((city) => 
-        axios.get('https://api.open-meteo.com/v1/forecast', {
-          params: {
-            latitude: city.lat,
-            longitude: city.lon,
-            current_weather: true,
-          },
-        })
-      );
+      const path = d3.geoPath()
+        .projection(projection);
 
-      const weatherResponses = await Promise.all(weatherPromises);
+      map.selectAll('path')
+        .data(data.features)
+        .enter()
+        .append('path')
+        .attr('d', path)
+        .style('fill', 'steelblue')
+        .style('stroke', 'white')
+        .style('stroke-width', 1.5);
 
-      const weatherMap = weatherResponses.reduce((acc, res, index) => {
-        acc[capitalCities[index].capital] = res.data.current_weather;
-        return acc;
-      }, {});
+      map.selectAll('circle')
+        .data(data.features)
+        .enter()
+        .append('circle')
+        .attr('cx', d => projection([d.longitude, d.latitude])[0])
+        .attr('cy', d => projection([d.longitude, d.latitude])[1])
+        .attr('r', 5)
+        .style('fill', 'red');
+    }
+  }, [map, data]);
 
-      setWeatherData(weatherMap);
-    };
-
-    fetchWeather();
-  }, []);
-
-  // Render the SVG with weather information
   return (
-    <div>
-      <svg id="world-map"></svg>
-      <div>
-        {capitalCities.map((city, index) => (
-          <div key={index}>
-            <h3>{city.capital}, {city.country}</h3>
-            {weatherData[city.capital] ? (
-              <p>
-                Temperature: {weatherData[city.capital].temperature}°C <br />
-                Wind Speed: {weatherData[city.capital].windspeed} m/s
-              </p>
-            ) : (
-              <p>Loading weather data...</p>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
+    <div id="map" />
   );
 };
-
 export default WorldWeatherMap;

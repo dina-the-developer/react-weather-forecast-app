@@ -9,7 +9,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import './Header.css';
 
 const Header = ({ onLocationSearch, locationInfo  }) => {
-  console.log(locationInfo);
+  // console.log(locationInfo);
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (e) => {
