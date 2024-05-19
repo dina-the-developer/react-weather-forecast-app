@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const NearestCitiesWeather = ({ lat, long }) => {
-  console.log(lat, long )
+  //console.log(lat, long )
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [cities, setCities] = useState([]);
@@ -14,18 +14,18 @@ const NearestCitiesWeather = ({ lat, long }) => {
   const GEOCODING_API_KEY = '381dd746312747bbb46c7a65ca4a1837';
 
   // Function to fetch coordinates based on location input
-  const fetchCoordinates = async (cityName) => {
-    if (cityName) {
+  const fetchCoordinates = async (lat, long ) => {
+    if (lat && long ) {
       try {
         setLoading(true); // Start loading when fetching coordinates
         const response = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
           params: {
-            q: cityName,
+            q: lat+','+long ,
             key: GEOCODING_API_KEY,
-            no_annotations: 1,
+            no_annotations: 1
           },
         });
-
+        
         if (response.data.results.length > 0) {
           const firstResult = response.data.results[0];
           setLatitude(firstResult.geometry.lat);
@@ -40,12 +40,13 @@ const NearestCitiesWeather = ({ lat, long }) => {
     }
   };
  
-
   useEffect(() => {
     fetchCoordinates(lat, long ); // Fetch coordinates when city changes
+    
   }, [lat, long ]); // Dependency array ensures fetching when city changes
 
   useEffect(() => {
+    console.log(latitude, longitude);
     const fetchNearestCitiesAndWeather = async () => {
       if (lat && long) {
         try {
@@ -66,18 +67,21 @@ const NearestCitiesWeather = ({ lat, long }) => {
 
           setCities(cityData);
 
+          // console.log(cityData);
+
           const weatherPromises = cityData.map((lat, long ) =>
             axios.get('https://api.open-meteo.com/v1/forecast', {
               params: {
-                latitude: lat,
-                longitude: long,
+                latitude: '40.7128,51.50,48.85,41.89',
+                longitude: '74.00,-0.11,2.35,12.48',
                 current_weather: true, // Fetch current weather
+                wind_speed_10m: true
               },
             })
           );
 
           const weatherResponses = await Promise.all(weatherPromises);
-
+          console.log(weatherResponses);
           const weatherMap = weatherResponses.reduce((acc, res, index) => {
             const cityName = cityData[index].city;
             acc[cityName] = res.data.current_weather;
@@ -86,6 +90,7 @@ const NearestCitiesWeather = ({ lat, long }) => {
 
           setWeatherData(weatherMap);
           setLoading(false);
+          console.log(weatherMap);
         } catch (error) {
           setError(error);
           setLoading(false);
@@ -97,6 +102,12 @@ const NearestCitiesWeather = ({ lat, long }) => {
       fetchNearestCitiesAndWeather(); // Fetch data when coordinates are available
     }
   }, []);
+
+  useEffect(() => {
+    if (weatherData) {
+      console.log(weatherData);
+    }
+  });
 
   if (loading) {
     return <p>Loading...</p>;
@@ -123,6 +134,8 @@ const NearestCitiesWeather = ({ lat, long }) => {
             )}
           </div>
         ))}
+
+        <div className="chart-bar" id="bar"></div>
       </div>
     </div>
   );
