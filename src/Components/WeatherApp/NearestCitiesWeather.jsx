@@ -81,7 +81,7 @@ const NearestCitiesWeather = ({ lat, long }) => {
           );
 
           const weatherResponses = await Promise.all(weatherPromises);
-          console.log(weatherResponses);
+          // console.log(weatherResponses);
           const weatherMap = weatherResponses.reduce((acc, res, index) => {
             const cityName = cityData[index].city;
             acc[cityName] = res.data.current_weather;
@@ -90,7 +90,7 @@ const NearestCitiesWeather = ({ lat, long }) => {
 
           setWeatherData(weatherMap);
           setLoading(false);
-          console.log(weatherMap);
+          // console.log(weatherMap);
         } catch (error) {
           setError(error);
           setLoading(false);
@@ -105,7 +105,7 @@ const NearestCitiesWeather = ({ lat, long }) => {
 
   useEffect(() => {
     if (weatherData) {
-      console.log(weatherData);
+      // console.log(weatherData);
     }
   });
 
