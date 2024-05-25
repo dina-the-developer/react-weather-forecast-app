@@ -13,7 +13,7 @@ const API_KEY = '381dd746312747bbb46c7a65ca4a1837';
 function App() {
   const [position, setPosition] = useState({ latitude: null, longitude: null });
   useEffect(() => {
-    console.log(position);
+    
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(function (position) {
         setPosition({
@@ -68,11 +68,15 @@ function App() {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
+        //console.log(data);
         if (data.status.code === 200) {
-          // console.log("results:", data.results);
+          //console.log("results:", data.results[0].components.city + ', ' +data.results[0].components.state);
           // setLocation(data.results[0].formatted);
-          setLocationInfo(data.results[0].formatted);
+          if(data.results[0].components.city === undefined){
+            setLocationInfo(data.results[0].components.county + ', ' + data.results[0].components.state);
+          }else{
+            setLocationInfo(data.results[0].components.city + ', ' +data.results[0].components.state);
+          }
         } else {
           console.log("Reverse geolocation request failed.");
         }

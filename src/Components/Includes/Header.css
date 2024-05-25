@@ -8,10 +8,15 @@ header .navbar-collapse .navbar-text span{
   color: #f9f9f9;
 }
 header .input-group .form-control{
-  background-color: rgba(0,0,0,.5);
-  border: none;
+  background-color: transparent;
+  border-bottom: 2px solid #444;
   color: #e7e7e7;
   outline: 0;
+  border-radius: 0px;
+  width: 400px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
 }
 header .input-group .form-control:focus{
   outline: 0;
@@ -24,4 +29,18 @@ header .input-group button{
   background-color: rgba(0,0,0,.5);
   color: #e7e7e7;
   border: 2px solid transparent;
+}
+header .suggestions{
+  width: 100%;
+  position: absolute;
+  top: 46px;
+  background: rgba(0, 0, 0, 0.5);
+  display: inline-block;
+  padding: 10px;
+  font-size: 14px;
+  list-style: none;
+}
+header .suggestions li{
+  padding-bottom: 10px;
+  cursor: pointer;
 }

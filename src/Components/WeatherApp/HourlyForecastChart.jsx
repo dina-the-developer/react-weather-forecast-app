@@ -12,7 +12,7 @@ const HourlyForecastChart = ({ latitude, longitude }) => {
         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&timezone=auto&forecast_days=1`
       );
       const responseData = await response.json();
-      console.log(responseData);
+      // console.log(responseData);
 
       // Filter data for the current date
       const currentDate = new Date().toISOString().split('T')[0];

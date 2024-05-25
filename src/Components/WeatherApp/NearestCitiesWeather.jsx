@@ -105,7 +105,7 @@ const NearestCitiesWeather = ({ lat, long }) => {
 
   useEffect(() => {
     if (weatherData) {
-      // console.log(weatherData);
+      console.log(weatherData);
     }
   });
 
@@ -122,7 +122,7 @@ const NearestCitiesWeather = ({ lat, long }) => {
       <h2>Weather for Nearest 5 Cities</h2>
       <div>
         {cities.map((city, index) => (
-          <div key={index} style={{ border: '1px solid gray', padding: '10px', margin: '10px' }}>
+          <div key={index} style={{ border: '1px solid #e7e7e7', padding: '10px', margin: '10px' }}>
             <h3>{city.city}</h3>
             {weatherData[city.city] ? (
               <p>

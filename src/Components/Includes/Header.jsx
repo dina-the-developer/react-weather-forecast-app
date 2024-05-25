@@ -1,20 +1,44 @@
-import React, { useState } from 'react'
-import Button from 'react-bootstrap/Button';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios';
+// import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import InputGroup from 'react-bootstrap/InputGroup';
 
+
 import './Header.css';
+
+const GEOCODING_API_KEY = '381dd746312747bbb46c7a65ca4a1837';
 
 const Header = ({ onLocationSearch, locationInfo  }) => {
   // console.log(locationInfo);
   const [inputValue, setInputValue] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (inputValue.length > 2) {
+        const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${inputValue}&key=`+GEOCODING_API_KEY);
+        const suggestions = response.data.results.map(result => result.formatted);
+        setSuggestions(suggestions);
+        // console.log(response);
+      } else {
+        setSuggestions([]);
+      }
+    };
+    fetchSuggestions();
+  }, [inputValue]);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
+
+  // const handleSuggestionClick = (suggestion) => {
+  //   setInputValue(suggestion);
+  //   setSuggestions([]);
+  // };
 
   const handleSearch = () => {
     if (onLocationSearch) {
@@ -48,9 +72,18 @@ const Header = ({ onLocationSearch, locationInfo  }) => {
                   defaultValue={inputValue}
                   onChange={handleInputChange}
                 />
-                <Button variant="outline-secondary" id="button-addon2" onClick={handleSearch}>
+                {/* <Button variant="outline-secondary" id="button-addon2" onClick={handleSearch}>
                   <span className="material-symbols-outlined">search</span>
-                </Button>
+                </Button> */}
+                {suggestions.length > 0 && (
+                  <ul className="suggestions">
+                    {suggestions.map((suggestion, index) => (
+                      <li key={index} onClick={() => handleSearch(suggestion)}>
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </InputGroup>
             </Form>
             <Nav>
