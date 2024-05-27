@@ -8,6 +8,7 @@ import WeatherForecast from './WeatherForecast';
 import HourlyForecastChart from './HourlyForecastChart';
 
 import NearestCitiesWeather from './NearestCitiesWeather';
+import TodayForecastExtra from './TodayForecastExtra';
 
 const WeatherApp = ({latitude, longitude}) => {
   // console.log(latitude + ' - ' + longitude)
@@ -19,7 +20,8 @@ const WeatherApp = ({latitude, longitude}) => {
             <WeatherForecast latitude={latitude} longitude={longitude}/>
           </Col>
           <Col sm={3}>
-            <NearestCitiesWeather lat={latitude} long={longitude} />
+            {/* <NearestCitiesWeather lat={latitude} long={longitude} /> */}
+            <TodayForecastExtra latitude={latitude} longitude={longitude} />
           </Col>
         </Row>
         <Row>
