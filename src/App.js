@@ -10,7 +10,8 @@ import WeatherApp from './Components/WeatherApp/WeatherApp';
 
 const API_KEY = '381dd746312747bbb46c7a65ca4a1837'; 
 
-function App() {
+function App() { 
+  
   const [position, setPosition] = useState({ latitude: null, longitude: null });
   useEffect(() => {
     

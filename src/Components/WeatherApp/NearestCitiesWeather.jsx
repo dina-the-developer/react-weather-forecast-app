@@ -22,9 +22,11 @@ const NearestCitiesWeather = ({ lat, long }) => {
           params: {
             q: lat+','+long ,
             key: GEOCODING_API_KEY,
-            no_annotations: 1
+            limit: 5,
           },
         });
+
+        console.log(response);
         
         if (response.data.results.length > 0) {
           const firstResult = response.data.results[0];
