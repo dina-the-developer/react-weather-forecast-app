@@ -15,7 +15,7 @@ const BarChart = ({ latitude, longitude } ) => {
         params: {
           latitude,
           longitude,
-          hourly: 'precipitation', // Request hourly precipitation data
+          hourly: 'precipitation, weathercode', // Request hourly precipitation data
         },
       });
       const rainData = response.data.hourly.precipitation.map((value, index) => ({
