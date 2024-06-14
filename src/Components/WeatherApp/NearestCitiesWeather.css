@@ -1,0 +1,11 @@
+.nearest-cities-container .card{
+  padding:15px 20px
+}
+.nearest-cities-container .card-title{
+  padding-top: 10px;
+  font-size: 24px;
+  text-align: left;
+}
+.nearest-cities-container .card-text{
+  text-align: left;
+}

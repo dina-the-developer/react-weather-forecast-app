@@ -1,147 +1,125 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Card, Col, Row } from 'react-bootstrap';
 
-const NearestCitiesWeather = ({ lat, long }) => {
-  //console.log(lat, long )
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [cities, setCities] = useState([]);
-  const [weatherData, setWeatherData] = useState({});
-  const [loading, setLoading] = useState(false);
+import './NearestCitiesWeather.css';
+
+const majorCities = [
+  { name: "New York", lat: 40.7128, lon: -74.0060 },
+  { name: "Los Angeles", lat: 34.0522, lon: -118.2437 },
+  { name: "Chicago", lat: 41.8781, lon: -87.6298 },
+  // { name: "Houston", lat: 29.7604, lon: -95.3698 },
+  // { name: "Phoenix", lat: 33.4484, lon: -112.0740 }
+];
+
+// Weather icons mapping
+const weatherIcons = {
+  0: '☀️',
+  1: '⛅',
+  2: '🌥️',
+  3: '☁️',
+  45: '🌫️',
+  48: '🌫️',
+  51: '🌧️',
+  53: '🌧️',
+  55: '🌧️',
+  61: '🌦️',
+  63: '🌧️',
+  65: '🌧️',
+  66: '🌨️',
+  67: '🌨️',
+  71: '🌨️',
+  73: '🌨️',
+  75: '🌨️',
+  77: '❄️',
+  80: '🌧️',
+  81: '🌧️',
+  82: '🌧️',
+  85: '❄️',
+  86: '❄️',
+  95: '🌩️',
+  96: '🌩️',
+  99: '🌩️',
+};
+
+const NearestCitiesWeather = () => {
+  const [location, setLocation] = useState({ lat: null, lon: null });
+  const [weatherData, setWeatherData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // API key for OpenCage, ensure you keep this secure and do not commit to public repos
-  const GEOCODING_API_KEY = '381dd746312747bbb46c7a65ca4a1837';
-
-  // Function to fetch coordinates based on location input
-  const fetchCoordinates = async (lat, long ) => {
-    if (lat && long ) {
-      try {
-        setLoading(true); // Start loading when fetching coordinates
-        const response = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
-          params: {
-            q: lat+','+long ,
-            key: GEOCODING_API_KEY,
-            limit: 5,
-          },
-        });
-
-        console.log(response);
-        
-        if (response.data.results.length > 0) {
-          const firstResult = response.data.results[0];
-          setLatitude(firstResult.geometry.lat);
-          setLongitude(firstResult.geometry.lng);
-        } else {
-          throw new Error('No results found');
-        }
-      } catch (error) {
-        setError(error);
-        setLoading(false); // Stop loading on error
-      }
-    }
-  };
- 
   useEffect(() => {
-    fetchCoordinates(lat, long ); // Fetch coordinates when city changes
-    
-  }, [lat, long ]); // Dependency array ensures fetching when city changes
-
-  useEffect(() => {
-    console.log(latitude, longitude);
-    const fetchNearestCitiesAndWeather = async () => {
-      if (lat && long) {
-        try {
-          const cityResponse = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
-            params: {
-              q: `${lat},${long}`,
-              key: GEOCODING_API_KEY,
-              no_annotations: 1,
-              limit: 5, // Get 5 nearest cities
-            },
+    // Get current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
           });
-
-          const cityData = cityResponse.data.results.map((result) => ({
-            city: result.components.city || 'Unknown',
-            lat: result.geometry.lat,
-            lon: result.geometry.lng,
-          }));
-
-          setCities(cityData);
-
-          // console.log(cityData);
-
-          const weatherPromises = cityData.map((lat, long ) =>
-            axios.get('https://api.open-meteo.com/v1/forecast', {
-              params: {
-                latitude: '40.7128,51.50,48.85,41.89',
-                longitude: '74.00,-0.11,2.35,12.48',
-                current_weather: true, // Fetch current weather
-                wind_speed_10m: true
-              },
-            })
-          );
-
-          const weatherResponses = await Promise.all(weatherPromises);
-          // console.log(weatherResponses);
-          const weatherMap = weatherResponses.reduce((acc, res, index) => {
-            const cityName = cityData[index].city;
-            acc[cityName] = res.data.current_weather;
-            return acc;
-          }, {});
-
-          setWeatherData(weatherMap);
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+          setError("Error getting location");
           setLoading(false);
-          // console.log(weatherMap);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+      setError("Geolocation is not supported by this browser.");
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Fetch weather data for major cities
+    const fetchWeatherData = async () => {
+      if (location.lat && location.lon) {
+        try {
+          const weatherPromises = majorCities.map(city => 
+            axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current_weather=true`)
+          );
+          const responses = await Promise.all(weatherPromises);
+          const weatherData = responses.map((response, index) => ({
+            city: majorCities[index].name,
+            ...response.data.current_weather
+          }));
+          console.log(weatherData);
+          setWeatherData(weatherData);
+          setLoading(false);
         } catch (error) {
-          setError(error);
+          console.error("Error fetching weather data: ", error);
+          setError("Error fetching weather data");
           setLoading(false);
         }
       }
     };
 
-    if (latitude && longitude) {
-      fetchNearestCitiesAndWeather(); // Fetch data when coordinates are available
-    }
-  }, []);
+    fetchWeatherData();
+  }, [location]);
 
-  useEffect(() => {
-    if (weatherData) {
-      console.log(weatherData);
-    }
-  });
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error.message}</p>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <div>
-      <h2>Weather for Nearest 5 Cities</h2>
-      <div>
-        {cities.map((city, index) => (
-          <div key={index} style={{ border: '1px solid #e7e7e7', padding: '10px', margin: '10px' }}>
-            <h3>{city.city}</h3>
-            {weatherData[city.city] ? (
-              <p>
-                Temperature: {weatherData[city.city].temperature}°C <br />
-                Wind Speed: {weatherData[city.city].windspeed} m/s
-              </p>
-            ) : (
-              <p>No weather data available</p>
-            )}
-          </div>
+    <div className='nearest-cities-container'>
+      {/* <h5 className='pb-2'>Major Cities Weather Forecast</h5> */}
+        {weatherData.map((cityWeather, index) => (
+          <Card className="text-white text-left mb-2" key={index}>
+            <Row>
+              <Col sm={8}>
+                <Card.Title as='h4'>{cityWeather.city}</Card.Title>
+                <Card.Text as='p'>{cityWeather.windspeed} km/h</Card.Text>
+              </Col>
+              <Col sm={4}>
+                <span>{weatherIcons[cityWeather.weathercode]}</span>
+                <Card.Text className="text-center">{cityWeather.temperature}<span>&deg; C</span></Card.Text>
+              </Col>
+            </Row>
+          </Card>
         ))}
-
-        <div className="chart-bar" id="bar"></div>
-      </div>
     </div>
   );
 };
-
 
 export default NearestCitiesWeather;

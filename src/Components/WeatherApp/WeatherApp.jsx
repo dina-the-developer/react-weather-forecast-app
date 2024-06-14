@@ -7,7 +7,7 @@ import './WeatherApp.css';
 import WeatherForecast from './WeatherForecast';
 import HourlyForecastChart from './HourlyForecastChart';
 
-// import NearestCitiesWeather from './NearestCitiesWeather';
+import NearestCitiesWeather from './NearestCitiesWeather';
 import TodayForecastExtra from './TodayForecastExtra';
 
 const WeatherApp = ({latitude, longitude}) => {
@@ -19,8 +19,7 @@ const WeatherApp = ({latitude, longitude}) => {
             <WeatherForecast latitude={latitude} longitude={longitude}/>
           </Col>
           <Col sm={3}>
-            {/* <NearestCitiesWeather lat={latitude} long={longitude} /> */}
-            <TodayForecastExtra latitude={latitude} longitude={longitude} />
+            {/* <TodayForecastExtra latitude={latitude} longitude={longitude} /> */}
           </Col>
         </Row>
         <Row>
@@ -28,7 +27,7 @@ const WeatherApp = ({latitude, longitude}) => {
             <HourlyForecastChart latitude={latitude} longitude={longitude} />
           </Col>
           <Col sm={3}>
-          
+            <NearestCitiesWeather lat={latitude} long={longitude} />
           </Col>
         </Row>
       </Container>
