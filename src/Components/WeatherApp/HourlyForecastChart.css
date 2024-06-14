@@ -5,3 +5,16 @@
   padding: 30px;
   color: #ffffff;
 }
+.tooltip {
+  font-size: 12px;
+  position: absolute;
+  color: #111;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

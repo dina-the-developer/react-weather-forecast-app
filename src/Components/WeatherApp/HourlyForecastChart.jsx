@@ -12,7 +12,6 @@ const HourlyForecastChart = ({ latitude, longitude }) => {
         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&timezone=auto&forecast_days=1`
       );
       const responseData = await response.json();
-      // console.log(responseData);
 
       // Filter data for the current date
       const currentDate = new Date().toISOString().split('T')[0];
@@ -91,18 +90,32 @@ const HourlyForecastChart = ({ latitude, longitude }) => {
           .y1((d) => height - yScale(d.temperature))
         );
 
+      // Create tooltip
+      const tooltip = d3.select("#chart")
+        .append("div")
+        .attr("class", "tooltip");
+
       // Draw circles for data points
       svg.selectAll("dot")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("stroke", "#111111")
-      .attr("stroke-width", "2")
-      .attr("cx", (d) => xScale(d.time))
-      .attr("cy", (d) => height - yScale(d.temperature))
-      .attr("r", 6)
-      .style("fill", "#ffa500"); // Change color as needed
-
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("stroke", "#111111")
+        .attr("stroke-width", "2")
+        .attr("cx", (d) => xScale(d.time))
+        .attr("cy", (d) => height - yScale(d.temperature))
+        .attr("r", 6)
+        .style("fill", "#ffa500")
+        .on("mouseover", (event, d) => {
+          const [x, y] = d3.pointer(event);
+          tooltip.style("opacity", 1)
+                 .style("left", `${x + 5}px`)
+                 .style("top", `${y - 18}px`)
+                 .html(`Time: ${d3.timeFormat("%H:%M")(d.time)}<br>Temp: ${d.temperature}°C`);
+        })
+        .on("mouseout", () => {
+          tooltip.style("opacity", 0);
+        });
     }
   }, [data]);
 

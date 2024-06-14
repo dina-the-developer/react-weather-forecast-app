@@ -8,11 +8,9 @@ import WeatherForecast from './WeatherForecast';
 import HourlyForecastChart from './HourlyForecastChart';
 
 // import NearestCitiesWeather from './NearestCitiesWeather';
-// import TodayForecastExtra from './TodayForecastExtra';
-import BarChart from './BarChart';
+import TodayForecastExtra from './TodayForecastExtra';
 
 const WeatherApp = ({latitude, longitude}) => {
-  // console.log(latitude + ' - ' + longitude)
   return (
     <div className='weather-app-container'>
       <Container fluid>
@@ -22,13 +20,12 @@ const WeatherApp = ({latitude, longitude}) => {
           </Col>
           <Col sm={3}>
             {/* <NearestCitiesWeather lat={latitude} long={longitude} /> */}
-            {/* <TodayForecastExtra latitude={latitude} longitude={longitude} /> */}
-            <BarChart latitude={latitude} longitude={longitude} />
+            <TodayForecastExtra latitude={latitude} longitude={longitude} />
           </Col>
         </Row>
         <Row>
           <Col sm={9}>
-            { <HourlyForecastChart latitude={latitude} longitude={longitude} /> }
+            <HourlyForecastChart latitude={latitude} longitude={longitude} />
           </Col>
           <Col sm={3}>
           
