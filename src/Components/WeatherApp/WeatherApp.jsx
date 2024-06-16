@@ -19,7 +19,7 @@ const WeatherApp = ({latitude, longitude}) => {
             <WeatherForecast latitude={latitude} longitude={longitude}/>
           </Col>
           <Col sm={3}>
-            {/* <TodayForecastExtra latitude={latitude} longitude={longitude} /> */}
+            <TodayForecastExtra latitude={latitude} longitude={longitude} />
           </Col>
         </Row>
         <Row>

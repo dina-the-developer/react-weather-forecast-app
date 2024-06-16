@@ -9,14 +9,14 @@ header .navbar-collapse .navbar-text span{
 }
 header .input-group .form-control{
   background-color: transparent;
-  border-bottom: 2px solid #444;
+  border: 2px solid #aaa;
   color: #e7e7e7;
   outline: 0;
-  border-radius: 0px;
+  border-radius: 25px;
   width: 400px;
-  border-top: none;
+  /* border-top: none;
   border-left: none;
-  border-right: none;
+  border-right: none; */
 }
 header .input-group .form-control:focus{
   outline: 0;

@@ -4,7 +4,7 @@ import './Style.css';
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// import Footer from './Components/Includes/Footer';
+import Footer from './Components/Includes/Footer';
 import Header from './Components/Includes/Header';
 import WeatherApp from './Components/WeatherApp/WeatherApp';
 
@@ -108,7 +108,7 @@ function App() {
     <div className="App">
       <Header onLocationSearch={handleLocationSearch} locationInfo={locationInfo}/>
         <WeatherApp latitude={latitude} longitude={longitude} />      
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

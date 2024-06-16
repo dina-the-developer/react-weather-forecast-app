@@ -1,3 +1,6 @@
+.nearest-cities-container{
+  margin-top: 30px;  
+}
 .nearest-cities-container .card{
   padding:15px 20px
 }

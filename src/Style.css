@@ -1,8 +1,9 @@
 body{
   font-family: 'Poppins', sans-serif;
+  background-image: linear-gradient(to right, #111111, #777777);
 }
 .App{
-  background-color: darkseagreen;
+  /* background-color: rgba(0,0,0,.5); */
 }
 .navbar{
   background: transparent;
